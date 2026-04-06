@@ -1,0 +1,14 @@
+{
+  "name": "bulley-sales-scraper",
+  "version": "1.0.0",
+  "description": "Scraper for Google Maps & Instagram for Bulley Fitness",
+  "main": "index.js",
+  "dependencies": {
+    "@notion-hq/client": "^2.2.15",
+    "playwright": "^1.42.1",
+    "dotenv": "^16.4.5"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
