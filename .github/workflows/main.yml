@@ -1,0 +1,42 @@
+name: Bulley Sales Scraper
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Ejecutar todos los días a las 08:00 UTC
+  workflow_dispatch: # Permitir ejecución manual
+    inputs:
+      query:
+        description: 'Búsqueda (ej: Fisioterapia Barcelona)'
+        required: true
+        default: 'Fisioterapia Madrid'
+      max_results:
+        description: 'Máximo de resultados'
+        required: false
+        default: '10'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Scraper
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+          SEARCH_QUERY: ${{ github.event.inputs.query || 'Fisioterapia Madrid' }}
+          MAX_RESULTS: ${{ github.event.inputs.max_results || '10' }}
+        run: node index.js
