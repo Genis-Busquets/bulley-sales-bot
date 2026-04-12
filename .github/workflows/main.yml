@@ -25,9 +25,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
@@ -38,4 +44,10 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           SEARCH_QUERY: ${{ github.event.inputs.query || 'Fisioterapia Madrid' }}
           MAX_RESULTS: ${{ github.event.inputs.max_results || '10' }}
-        run: node index.js
+        run: |
+          if [ -z "$NOTION_TOKEN" ] || [ -z "$NOTION_DATABASE_ID" ]; then
+            echo "Error: Las variables NOTION_TOKEN o NOTION_DATABASE_ID no están configuradas."
+            exit 1
+          fi
+          node index.js
+
