@@ -31,8 +31,10 @@ async function scrapeGoogleMaps() {
   try {
     console.log(`Navigando a Google Maps...`);
     await page.goto(`https://www.google.com/maps/search/${encodeURIComponent(SEARCH_QUERY)}`, {
-      waitUntil: 'networkidle'
+      waitUntil: 'domcontentloaded',
+      timeout: 60000
     });
+
 
     // Manejar diálogo de cookies (más robusto)
     try {
