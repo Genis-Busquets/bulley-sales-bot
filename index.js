@@ -35,7 +35,6 @@ async function scrapeGoogleMaps() {
       timeout: 60000
     });
 
-
     // Manejar diálogo de cookies (más robusto)
     try {
       const cookieButtons = [
@@ -86,10 +85,11 @@ async function scrapeGoogleMaps() {
       for (let i = 0; i < Math.min(resultItems.length, MAX_RESULTS); i++) {
         try {
           const item = resultItems[i];
+          const itemName = await item.getAttribute('aria-label') || await item.innerText();
           await item.click();
-          await page.waitForTimeout(1500); // Esperar a que cargue el detalle
+          await page.waitForTimeout(2500); // Esperar a que cargue el detalle
 
-          const lead = await extractBusinessData(page);
+          const lead = await extractBusinessData(page, itemName);
           if (lead) {
             leads.push(lead);
             console.log(`[${i+1}/${MAX_RESULTS}] Procesado: ${lead.name}`);
@@ -117,9 +117,9 @@ async function scrapeGoogleMaps() {
   return leads;
 }
 
-async function extractBusinessData(page) {
+async function extractBusinessData(page, providedName) {
   try {
-    const name = await page.innerText('h1');
+    const name = providedName && providedName.trim() !== "" && providedName !== "Results" ? providedName : await page.innerText('h1');
     const website = await page.getAttribute('a[data-item-id="authority"]', 'href').catch(() => null);
     
     // Selector de teléfono más genérico o alternativo
@@ -205,5 +205,4 @@ async function syncToNotion(leads) {
     process.exit(1);
   }
 })();
-
 
