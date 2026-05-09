@@ -1,4 +1,4 @@
-const { Client } = require("@notion/client");
+const { Client } = require("@notionhq/client");
 const { chromium } = require("playwright");
 require("dotenv").config();
 
