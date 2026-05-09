@@ -4,7 +4,7 @@
   "description": "Scraper for Google Maps & Instagram for Bulley Fitness",
   "main": "index.js",
   "dependencies": {
-    "@notion-hq/client": "^2.2.15",
+    "@notion/client": "^2.2.15",
     "playwright": "^1.42.1",
     "dotenv": "^16.4.5"
   },
